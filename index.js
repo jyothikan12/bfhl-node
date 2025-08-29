@@ -4,12 +4,10 @@ const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
 
-
 const FULL_NAME = process.env.FULL_NAME || "jyothika_reddy_naru"; 
 const DOB = process.env.DOB_DDMMYYYY || "12102005";
 const EMAIL = process.env.EMAIL || "jyothikanaru12@gmail.com";
 const ROLL = process.env.ROLL || "22BCE8256";
-
 
 function isDigit(str) {
   return /^[0-9]+$/.test(str);
@@ -18,6 +16,12 @@ function isAlpha(str) {
   return /^[A-Za-z]+$/.test(str);
 }
 
+// ✅ Root route (for browser check)
+app.get("/", (req, res) => {
+  res.send("BFHL API is running ✅. Use POST /bfhl to test.");
+});
+
+// ✅ Main POST route
 app.post("/bfhl", (req, res) => {
   try {
     const items = (req.body.data || []).map(String);
@@ -30,7 +34,6 @@ app.post("/bfhl", (req, res) => {
     let total = 0;
 
     items.forEach((token) => {
-     
       for (let ch of token) {
         if (/[A-Za-z]/.test(ch)) {
           letterStream.push(ch);
@@ -55,7 +58,6 @@ app.post("/bfhl", (req, res) => {
       if (sp) specials.push(...sp);
     });
 
-    
     let rev = letterStream.reverse();
     let altCaps = rev.map((ch, i) =>
       i % 2 === 0 ? ch.toUpperCase() : ch.toLowerCase()
@@ -95,4 +97,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
